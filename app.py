@@ -101,12 +101,10 @@ async def main():
                         st.session_state["past"][i],
                         is_user=True,
                         key=str(i) + "_user",
-                        avatar_style="croodles",
                     )
                     message(
                         st.session_state["generated"][i],
                         key=str(i),
-                        avatar_style="pixel-art",
                     )
 
 
