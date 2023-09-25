@@ -1,23 +1,16 @@
 import asyncio
-import os
-import pickle
 
 import streamlit as st
 from dotenv import load_dotenv
 from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
-from langchain.document_loaders import TextLoader
-from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.memory import ConversationBufferMemory
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import FAISS
 from streamlit_chat import message
 from langchain.prompts import PromptTemplate
-
-import ocr
+from file import UploadedFile
 
 prompt_template = """\
-You are Prometheus, a bot who helps VC in analyzing startups.
+You are Prometheus, a bot who helps VCs in analyzing startups.
 Your task is to answer questions about companies using there pitchdeck.
 If you dont know the answer to any question, ask the user to clarify or apologize
 
@@ -30,42 +23,14 @@ PROMPT = PromptTemplate(
     template=prompt_template, input_variables=["context", "question"]
 )
 
-
 load_dotenv()
 
 
 async def main():
-    async def storeDocEmbeds(uploaded_file):
-        with open(f"files/pd/{uploaded_file.name}", "wb") as f:
-            f.write(uploaded_file.read())
-        images_folder = ocr.create_images_from_pdf(f"files/pd/{uploaded_file.name}")
-        text_file = ocr.extract_text_from_image(images_folder)
-        loader = TextLoader(text_file)
-        documents = loader.load()
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-        documents = text_splitter.split_documents(documents)
-        embeddings = OpenAIEmbeddings()
-        vectors = FAISS.from_documents(documents, embeddings)
-
-        with open(f"files/pk/{uploaded_file.name}.pkl", "wb") as f:
-            pickle.dump(vectors, f)
-
-    async def getDocEmbeds(uploaded_file):
-        if not os.path.isfile(f"files/pk/{uploaded_file.name}.pkl"):
-            await storeDocEmbeds(uploaded_file)
-
-        with open(f"files/pk/{uploaded_file.name}.pkl", "rb") as f:
-            global vectores
-            vectors = pickle.load(f)
-
-        return vectors
-
     async def conversational_chat(query):
         print(query)
         result = qa({"question": query}, return_only_outputs=True)
         st.session_state["history"].append((query, result["answer"]))
-        # print("Log: ")
-        # print(st.session_state['history'])
         return result["answer"]
 
     if "history" not in st.session_state:
@@ -83,7 +48,8 @@ async def main():
         with st.spinner("Processing..."):
             # Add your code here that needs to be executed
             uploaded_file.seek(0)
-            vectors = await getDocEmbeds(uploaded_file)
+            file = UploadedFile(uploaded_file)
+            vectors = file.get_vector()
             memory = ConversationBufferMemory(
                 memory_key="chat_history", return_messages=True
             )
