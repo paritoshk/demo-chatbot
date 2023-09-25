@@ -2,47 +2,46 @@ from PyPDF2 import PdfReader
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
-from langchain.chains.question_answering import load_qa_chain
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import ConversationalRetrievalChain
 import pickle
-from pathlib import Path
 from dotenv import load_dotenv
 import os
 import streamlit as st
 from streamlit_chat import message
 import io
 import asyncio
+from langchain.document_loaders import TextLoader
+
+import ocr
 
 load_dotenv()
 api_key = os.getenv('OPENAI_API_KEY')  
 
-# vectors = getDocEmbeds("gpt4.pdf")
-# qa = ChatVectorDBChain.from_llm(ChatOpenAI(model_name="gpt-3.5-turbo"), vectors, return_source_documents=True)
-
 async def main():
-
-    async def storeDocEmbeds(file, filename):
-    
-        reader = PdfReader(file)
-        corpus = ''.join([p.extract_text() for p in reader.pages if p.extract_text()])
+    async def storeDocEmbeds(uploaded_file):
         
-        splitter =  RecursiveCharacterTextSplitter(chunk_size=1000,chunk_overlap=200,)
-        chunks = splitter.split_text(corpus)
-        
-        embeddings = OpenAIEmbeddings(openai_api_key = api_key)
-        vectors = FAISS.from_texts(chunks, embeddings)
-        
-        with open(filename + ".pkl", "wb") as f:
+        with open(f"files/pd/{uploaded_file.name}", "wb") as f:
+            f.write(uploaded_file.read())
+        images_folder = ocr.create_images_from_pdf(f"files/pd/{uploaded_file.name}")
+        text_file = ocr.extract_text_from_image(images_folder)
+        loader = TextLoader(text_file)
+        documents = loader.load()
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+        documents = text_splitter.split_documents(documents)
+        embeddings = OpenAIEmbeddings()
+        vectors = FAISS.from_documents(documents, embeddings)
+  
+        with open(f"files/pk/{uploaded_file.name}.pkl", "wb") as f:
             pickle.dump(vectors, f)
 
         
-    async def getDocEmbeds(file, filename):
+    async def getDocEmbeds(uploaded_file):
         
-        if not os.path.isfile(filename + ".pkl"):
-            await storeDocEmbeds(file, filename)
+        if not os.path.isfile(f"files/pk/{uploaded_file.name}.pkl"):
+            await storeDocEmbeds(uploaded_file)
         
-        with open(filename + ".pkl", "rb") as f:
+        with open(f"files/pk/{uploaded_file.name}.pkl", "rb") as f:
             global vectores
             vectors = pickle.load(f)
             
@@ -56,16 +55,12 @@ async def main():
         # print(st.session_state['history'])
         return result["answer"]
 
-
-    llm = ChatOpenAI(model_name="gpt-3.5-turbo")
-    chain = load_qa_chain(llm, chain_type="stuff")
-
     if 'history' not in st.session_state:
         st.session_state['history'] = []
 
 
     #Creating the chatbot interface
-    st.title("PDFChat :")
+    st.title("VCopilot Testing :")
 
     if 'ready' not in st.session_state:
         st.session_state['ready'] = False
@@ -77,10 +72,8 @@ async def main():
         with st.spinner("Processing..."):
         # Add your code here that needs to be executed
             uploaded_file.seek(0)
-            file = uploaded_file.read()
-            # pdf = PyPDF2.PdfFileReader()
-            vectors = await getDocEmbeds(io.BytesIO(file), uploaded_file.name)
-            qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(model_name="gpt-3.5-turbo"), retriever=vectors.as_retriever(), return_source_documents=True)
+            vectors = await getDocEmbeds(uploaded_file)
+            qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(model_name="gpt-4"), retriever=vectors.as_retriever(), return_source_documents=True)
 
         st.session_state['ready'] = True
 

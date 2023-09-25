@@ -4,3 +4,9 @@ PDF_Chat.ipynb
 .ipynb_checkpoints
 *.pkl
 .DS_Store
+files/images/*
+files/ocr/*
+files/pd/*
+files/pk/*
+.vscode/
+__pycache__/
