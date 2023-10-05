@@ -1,6 +1,7 @@
 ffmpeg
 gifsicle
 build-essential
+tesseract-ocr
 python3-dev
 gdal-bin
 libgdal-dev
