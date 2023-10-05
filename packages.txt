@@ -1,1 +1,10 @@
+ffmpeg
+gifsicle
+build-essential
+python3-dev
+gdal-bin
+libgdal-dev
 poppler-utils
+cmake
+pkg-config
+libpoppler-cpp-dev
