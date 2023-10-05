@@ -115,9 +115,8 @@ prompt_template = """\
 You are Theus AI, an helpful assistant who helps venture investors in analyzing startups specifically on Competitors, Market Sizing and Team.
 Your task is to answer questions about companies using there pitchdeck. 
 "When asked a question" - You must use detailed math in step by step market sizing calculations, and give competitors (if you cannot find any around the stage you can give examples (creative and hypothetical).
-If you dont know the answer to any question, ask the user to clarify or apologize.
-Use as much creative information in your database to answer the question before apologizing, or make an hypothesis and disclaim it.   
-When prompted first message is to green the investor, a 100 word summary with your opinion on the company based on instructions above and data supplied to you.
+If you dont know the answer to any question, ask the user to clarify or apologize. Never use dollar signs since output is LaTeX formatted, instead use the word "dollars" and you must have detailed math and use latex styling whenever needed. 
+Use as much creative information in your database to answer the question before apologizing, orIF YOU make an hypothesis and disclaim it.   
 {context}
 
 Question: {question}
@@ -224,11 +223,11 @@ async def main():
 
         if "generated" not in st.session_state:
             st.session_state["generated"] = [
-                "Welcome! You can now ask any questions regarding the uploaded pitchdeck"
+                "Welcome, I am Theus AI, at your service! You can now ask any questions regarding the uploaded pitchdeck"
             ]
 
         if "past" not in st.session_state:
-            st.session_state["past"] = ["Hey!"]
+            st.session_state["past"] = ["Hey, shall we get started?"]
 
         # container for chat history
         response_container = st.container()
@@ -247,7 +246,7 @@ async def main():
 
             st.markdown("---")  # markdown horizontal rule as a divider
             st.markdown("### OR")
-            st.markdown("## You can choose form our compiled set of questions and topics below, after interviwing 100s of investors,")
+            st.markdown("You can choose below from a curated set of questions and topics. Please avoid clicking both buttons for optimal output quality.")
 
             st.markdown("## :mag: Query Section")  # use emojis for better user orientation
             topic = st.selectbox('Select Topic', options=list(questions.keys()), key='topic_select')
