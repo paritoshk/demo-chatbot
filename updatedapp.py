@@ -65,7 +65,7 @@ questions = {
     "What is the Cost to Acquire & Maintain Customers (CAC)?",
     "What is the marketing channel strategy?"
   ],
-  "Financials": [
+  "Financial": [
     "What were the last 1-2 year revenues?",
     "What are the projected 1-5 year revenues?",
     "What is the breakdown of gross vs. net revenue?",
@@ -174,12 +174,12 @@ async def main():
     
     st.markdown("""
         ## Welcome to VentureCopilot Demo!
-        VentureCopilot is here to assist venture investors in analyzing startups on Competitors, Market Sizing, and Team. 
+        VentureCopilot is here to assist venture investors in analyzing startups on Competitors, Market Sizing, and Team and beyond!
         Follow the instructions below to get started:
         
         1. **Upload**: Use the file uploader to provide your pitch deck files (PDF/DOCX).
         2. **Query**: Once the file is uploaded, you can either:
-            - Type your question in the query box and hit 'Send', or
+            - Type your question, thoughts or comments in the query box and hit 'Send', or
             - Select a topic and question from the dropdown menus below the query box.
         3. **Interact**: Review the responses, and you can continue to ask more questions or adjust your queries as needed.
         4. **Feedback**: Your feedback is invaluable! Please consider submitting your feedback [here](https://noteforms.com/forms/venturecopilot-demo-feedback-form-f9coda).
@@ -241,9 +241,9 @@ async def main():
 
         with container:
             with st.form(key="my_form", clear_on_submit=True):
-                user_input = st.text_input(
-                    "Query:",
-                    placeholder="Ask information about pitchdeck",
+                user_input = st.text_area(
+                    "Chat:",
+                    placeholder="Ask information about the uplaoded pitch material",
                     key="input",
                 )
                 submit_button = st.form_submit_button(label="Send")
