@@ -1,7 +1,6 @@
 import asyncio
-
+import os
 import streamlit as st
-from dotenv import load_dotenv
 from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
@@ -125,9 +124,7 @@ Question: {question}
 PROMPT = PromptTemplate(
     template=prompt_template, input_variables=["context", "question"]
 )
-load_dotenv()
-OPEN_AI_KEY = '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'
-OPEN_AI_ORG_ID = 'org-wwGXFd0MRXAxWbFKczeBRBJk'
+
 
 
 
@@ -205,7 +202,7 @@ async def main():
             qa = ConversationalRetrievalChain.from_llm(
                 ChatOpenAI(model_name="gpt-4",
                             streaming=True,
-                            openai_api_key=OPEN_AI_KEY,
+                            openai_api_key=os.getenv("OPENAI_API_KEY"),
                             temperature=0.15,
                             ),
                 retriever=vectors.as_retriever(),
