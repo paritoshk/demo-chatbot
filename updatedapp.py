@@ -247,9 +247,10 @@ async def main():
 
             st.markdown("---")  # markdown horizontal rule as a divider
             st.markdown("### OR")
+            st.markdown("## You can choose form our compiled set of questions and topics below, after interviwing 100s of investors,")
 
             st.markdown("## :mag: Query Section")  # use emojis for better user orientation
-            topic = st.multiselect('Select Topic', options=list(questions.keys()), max_selections=3, key='topic_select')
+            topic = st.selectbox('Select Topic', options=list(questions.keys()), key='topic_select')
             question = st.multiselect('Select Question', options=questions[topic], max_selections=10, key='question_select')
 
 
@@ -258,15 +259,17 @@ async def main():
             select_button = st.button("Submit Selection")
 
             if submit_button and user_input:
-                output = await conversational_chat(user_input)
-                st.session_state["past"].append(user_input)
-                st.session_state["generated"].append(output)
+                with st.spinner("Working on it..."):
+                    output = await conversational_chat(user_input)
+                    st.session_state["past"].append(user_input)
+                    st.session_state["generated"].append(output)
             elif select_button:
                 # Construct a query string from the selected topic and question
-                query = f"{topic}: {question}"
-                output = await conversational_chat(query)
-                st.session_state["past"].append(query)
-                st.session_state["generated"].append(output)
+                with st.spinner("Working on it..."):
+                    query = f"{topic}: {question}"
+                    output = await conversational_chat(query)
+                    st.session_state["past"].append(query)
+                    st.session_state["generated"].append(output)
 
         if st.session_state["generated"]:
             with response_container:
