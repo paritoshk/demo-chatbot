@@ -305,6 +305,23 @@ async def main():
         st.markdown(
             "Designed with :heart: by Team VentureCopilot, Inc. Sending greetings from San Francisco. All rights reserved. :bridge_at_night:"
         )  # footer with emojis
-
+        st.markdown("""
+        ## :lock: Data Privacy Disclaimer
+        
+        Welcome to the VentureCopilot Demo! This platform is designed to provide a free interaction with our potential AI solutions, 
+        showcasing how they can assist in analyzing startups on Competitors, Market Sizing, and Team based on the uploaded pitch deck.
+        
+        :information_source: Please be informed that:
+        - This app operates entirely within your browser.
+        - No documents or data are stored, transmitted, or used outside of this session.
+        - All interactions, including the chat and document analysis, are performed locally on your machine.
+        - The speed and performance of the app are influenced by your device's capabilities and your internet connectivity.
+        
+        Our priority is to ensure a secure and private environment for you to experience the capabilities of our AI. 
+        Enjoy exploring, and rest assured that your data remains with you at all times! :smile:
+        
+        Should you have any concerns or questions, feel free to reach out to our support.
+        
+    """)
 if __name__ == "__main__":
     asyncio.run(main())
