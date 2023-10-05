@@ -8,7 +8,6 @@ from langchain.memory import ConversationBufferMemory
 from streamlit_chat import message
 from langchain.prompts import PromptTemplate
 from file import UploadedFile
-# List of questions for the chatbot
 questions = {
   "Target Market": [
     "Who's the customer? Key characteristics?",
@@ -127,42 +126,75 @@ Question: {question}
 PROMPT = PromptTemplate(
     template=prompt_template, input_variables=["context", "question"]
 )
-
 load_dotenv()
+OPEN_AI_KEY = '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'
+OPEN_AI_ORG_ID = 'org-wwGXFd0MRXAxWbFKczeBRBJk'
 
 
+
+
+@st.cache_data()
+def on_file_upload():
+    st.session_state['uploading'] = True
+@st.cache_data()
+def generate_context_and_question(topic, question):
+    # Format the context and question based on user selections
+    context = f"Topic: {topic}\n"
+    formatted_question = f"Question: {question}"
+    return context, formatted_question
+
+    
 async def main():
     async def conversational_chat(query):
         print(query)
-        result = qa({"question": query}, return_only_outputs=True)
+        try:
+            # Get the formatted context and question based on user selections
+            context, formatted_question = generate_context_and_question(topic, question)
+            # Combine the context and question with the user's query
+            full_query = f"{context}\n{formatted_question}\n{query}"
+            result = qa({"question": full_query}, return_only_outputs=True)
+        except Exception as e:
+            st.error(f'An error occurred: {e}')
+            return
         st.session_state["history"].append((query, result["answer"]))
         return result["answer"]
-
     if "history" not in st.session_state:
         st.session_state["history"] = []
+    st.set_page_config(
+        page_title="VentureCopilot Demo",
+        page_icon=":rocket:",
+        layout="wide",  # make the app expanded
+        initial_sidebar_state="expanded"  # expand the sidebar by default
+    )
 
-    # Creating the chatbot interface
-    st.title("VentureCopilot Demo :")
+    st.title("VentureCopilot Demo :rocket:")
+    
 
-    if "ready" not in st.session_state:
-        st.session_state["ready"] = False
 
-    uploaded_file = st.file_uploader("Choose a file", type="pdf",accept_multiple_files=True)
+    uploaded_file = st.file_uploader(
+        label="Choose files (PDF/DOCX)", 
+        type=['pdf', 'docx'], 
+        accept_multiple_files=False, 
+        help="Upload one or more files in PDF or DOCX format.",
+        on_change=on_file_upload
+    )
 
     if uploaded_file is not None:
         with st.spinner("Processing..."):
-# The code you mentioned is responsible for processing the uploaded file. It reads the file, creates
-# an instance of the `UploadedFile` class, and then generates vectors from the file using the
-# `get_vector()` method. These vectors are used for retrieval in the conversational chat.
-            # Add your code here that needs to be executed
+
             uploaded_file.seek(0)
             file = UploadedFile(uploaded_file)
             vectors = file.get_vector()
+
             memory = ConversationBufferMemory(
                 memory_key="chat_history", return_messages=True
             )
             qa = ConversationalRetrievalChain.from_llm(
-                ChatOpenAI(model_name="gpt-4"),
+                ChatOpenAI(model_name="gpt-4",
+                            streaming=True,
+                            openai_api_key=OPEN_AI_KEY,
+                            temperature=0.15,
+                            ),
                 retriever=vectors.as_retriever(),
                 return_source_documents=False,
                 memory=memory,
@@ -171,9 +203,11 @@ async def main():
 
         st.session_state["ready"] = True
 
+
     st.divider()
 
-    if st.session_state["ready"]:
+    if st.session_state.get("ready", False):
+
         if "generated" not in st.session_state:
             st.session_state["generated"] = [
                 "Welcome! You can now ask any questions regarding the uploaded pitchdeck"
@@ -197,9 +231,27 @@ async def main():
                 )
                 submit_button = st.form_submit_button(label="Send")
 
+            st.markdown("---")  # markdown horizontal rule as a divider
+            st.markdown("### OR")
+
+            st.markdown("## :mag: Query Section")  # use emojis for better user orientation
+            topic = st.selectbox('Select Topic', options=list(questions.keys()), key='topic_select')
+            question = st.selectbox('Select Question', options=questions[topic], key='question_select')
+
+
+
+            # A button to submit the selected topic and question
+            select_button = st.button("Submit Selection")
+
             if submit_button and user_input:
                 output = await conversational_chat(user_input)
                 st.session_state["past"].append(user_input)
+                st.session_state["generated"].append(output)
+            elif select_button:
+                # Construct a query string from the selected topic and question
+                query = f"{topic}: {question}"
+                output = await conversational_chat(query)
+                st.session_state["past"].append(query)
                 st.session_state["generated"].append(output)
 
         if st.session_state["generated"]:
@@ -215,6 +267,24 @@ async def main():
                         key=str(i),
                     )
 
+
+    st.divider()  # Creates a horizontal line for separation
+
+    st.markdown("## We value your feedback")
+    st.markdown(
+        "Please help us improve by providing your feedback "
+        "[here](https://noteforms.com/forms/venturecopilot-demo-feedback-form-f9coda)."
+    )
+
+    st.markdown("## Join our waitlist")
+    st.markdown(
+        "Excited about our demo? Join our waitlist "
+        "[here](https://noteforms.com/forms/venturecopilot-waitlist-7ggee7)."
+    )
+
+    st.markdown(
+        "Designed with :heart: by Team VentureCopilot, Inc. Sending greetings from San Francisco. All rights reserved. :bridge_at_night:"
+    )  # footer with emojis
 
 if __name__ == "__main__":
     asyncio.run(main())
