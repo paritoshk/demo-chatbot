@@ -141,6 +141,18 @@ def generate_context_and_question(topic, question):
 
     
 async def main():
+    st.set_page_config(
+        page_title="VentureCopilot Demo",
+        page_icon=":rocket:",
+        layout="wide",  # make the app expanded
+        initial_sidebar_state="expanded"  # expand the sidebar by default
+    )
+    #code_check = st.text_input("Enter the invite code here?")
+    #if code_check != "VCOPDEMO203OCt":
+    #    st.error("Sorry, you do not have access to this page.")
+     #   return
+    #else:
+    #    st.success("Welcome to the VentureCopilot Demo!")
     async def conversational_chat(query):
         print(query)
         try:
@@ -156,12 +168,7 @@ async def main():
         return result["answer"]
     if "history" not in st.session_state:
         st.session_state["history"] = []
-    st.set_page_config(
-        page_title="VentureCopilot Demo",
-        page_icon=":rocket:",
-        layout="wide",  # make the app expanded
-        initial_sidebar_state="expanded"  # expand the sidebar by default
-    )
+
 
     st.title("VentureCopilot Demo :rocket:")
     
@@ -220,7 +227,7 @@ async def main():
 
         if "generated" not in st.session_state:
             st.session_state["generated"] = [
-                "Welcome, I am Theus AI, at your service! You can now ask any questions regarding the uploaded pitchdeck"
+                "Welcome, I am Theus AI, at your service! You can now ask any questions regarding the uploaded pitch materials."
             ]
 
         if "past" not in st.session_state:
