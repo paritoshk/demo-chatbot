@@ -117,7 +117,7 @@ Your task is to answer questions about companies using there pitchdeck.
 "When asked a question" - You must use detailed math in step by step market sizing calculations, and give competitors (if you cannot find any around the stage you can give examples (creative and hypothetical).
 If you dont know the answer to any question, ask the user to clarify or apologize.
 Use as much creative information in your database to answer the question before apologizing, or make an hypothesis and disclaim it.   
-
+When prompted first message is to green the investor, a 100 word summary with your opinion on the company based on instructions above and data supplied to you.
 {context}
 
 Question: {question}
@@ -168,6 +168,20 @@ async def main():
     )
 
     st.title("VentureCopilot Demo :rocket:")
+    
+    st.markdown("""
+        ## Welcome to VentureCopilot Demo!
+        VentureCopilot is here to assist venture investors in analyzing startups on Competitors, Market Sizing, and Team. 
+        Follow the instructions below to get started:
+        
+        1. **Upload**: Use the file uploader to provide your pitch deck files (PDF/DOCX).
+        2. **Query**: Once the file is uploaded, you can either:
+            - Type your question in the query box and hit 'Send', or
+            - Select a topic and question from the dropdown menus below the query box.
+        3. **Interact**: Review the responses, and you can continue to ask more questions or adjust your queries as needed.
+        4. **Feedback**: Your feedback is invaluable! Please consider submitting your feedback [here](https://noteforms.com/forms/venturecopilot-demo-feedback-form-f9coda).
+        5. **Waitlist**: Excited about our demo? Join our waitlist [here](https://noteforms.com/forms/venturecopilot-waitlist-7ggee7).
+    """)
     
 
 
@@ -268,23 +282,23 @@ async def main():
                     )
 
 
-    st.divider()  # Creates a horizontal line for separation
+        st.divider()  # Creates a horizontal line for separation
 
-    st.markdown("## We value your feedback")
-    st.markdown(
-        "Please help us improve by providing your feedback "
-        "[here](https://noteforms.com/forms/venturecopilot-demo-feedback-form-f9coda)."
-    )
+        st.markdown("## We value your feedback")
+        st.markdown(
+            "Please help us improve by providing your feedback "
+            "[here](https://noteforms.com/forms/venturecopilot-demo-feedback-form-f9coda)."
+        )
 
-    st.markdown("## Join our waitlist")
-    st.markdown(
-        "Excited about our demo? Join our waitlist "
-        "[here](https://noteforms.com/forms/venturecopilot-waitlist-7ggee7)."
-    )
+        st.markdown("## Join our waitlist")
+        st.markdown(
+            "Excited about our demo? Join our waitlist "
+            "[here](https://noteforms.com/forms/venturecopilot-waitlist-7ggee7)."
+        )
 
-    st.markdown(
-        "Designed with :heart: by Team VentureCopilot, Inc. Sending greetings from San Francisco. All rights reserved. :bridge_at_night:"
-    )  # footer with emojis
+        st.markdown(
+            "Designed with :heart: by Team VentureCopilot, Inc. Sending greetings from San Francisco. All rights reserved. :bridge_at_night:"
+        )  # footer with emojis
 
 if __name__ == "__main__":
     asyncio.run(main())
