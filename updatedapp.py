@@ -202,7 +202,7 @@ async def main():
             qa = ConversationalRetrievalChain.from_llm(
                 ChatOpenAI(model_name="gpt-4",
                             streaming=True,
-                            openai_api_key=os.getenv("OPENAI_API_KEY"),
+                            openai_api_key=st.secrets["OPENAI_API_KEY"],
                             temperature=0.15,
                             ),
                 retriever=vectors.as_retriever(),
