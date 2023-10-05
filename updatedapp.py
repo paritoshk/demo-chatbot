@@ -249,8 +249,8 @@ async def main():
             st.markdown("### OR")
 
             st.markdown("## :mag: Query Section")  # use emojis for better user orientation
-            topic = st.selectbox('Select Topic', options=list(questions.keys()), key='topic_select')
-            question = st.selectbox('Select Question', options=questions[topic], key='question_select')
+            topic = st.multiselect('Select Topic', options=list(questions.keys()), max_selections=3, key='topic_select')
+            question = st.multiselect('Select Question', options=questions[topic], max_selections=10, key='question_select')
 
 
 
