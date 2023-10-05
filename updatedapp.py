@@ -308,7 +308,7 @@ async def main():
     st.markdown("""
     ## :lock: Data Privacy Disclaimer
     
-    Welcome to the VentureCopilot Demo! This platform is designed to provide a free interaction with our potential AI solutions, 
+    This platform is designed to provide a free interaction with our potential AI solutions, 
     showcasing how they can assist in analyzing startups on Competitors, Market Sizing, and Team based on the uploaded pitch deck.
     
     :information_source: Please be informed that:
@@ -316,6 +316,7 @@ async def main():
     - No documents or data are stored, transmitted, or used outside of this session.
     - All interactions, including the chat and document analysis, are performed locally on your machine.
     - The speed and performance of the app are influenced by your device's capabilities and your internet connectivity.
+    - Refreshing the screen will cause the app to reset, this means you will loose your progress, uploaded files.
     
     Our priority is to ensure a secure and private environment for you to experience the capabilities of our AI. 
     Enjoy exploring, and rest assured that your data remains with you at all times! :smile:
