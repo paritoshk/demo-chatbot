@@ -1,5 +1,6 @@
 import asyncio
-import os
+from markdown_it import MarkdownIt
+import pdfkit
 import streamlit as st
 from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
@@ -115,7 +116,7 @@ You are Theus AI, an helpful assistant who helps venture investors in analyzing 
 Your task is to answer questions about companies using there pitchdeck. 
 "When asked a question" - You must use detailed math in step by step market sizing calculations, and give competitors (if you cannot find any around the stage you can give examples (creative and hypothetical).
 If you dont know the answer to any question, ask the user to clarify or apologize. Never use dollar signs since output is LaTeX formatted, instead use the word "dollars" and you must have detailed math.
-Use as much creative information in your database to answer the question before apologizing, orIF YOU make an hypothesis and disclaim it.   
+Use as much creative information in your database to answer the question before apologizing, or IF YOU make an hypothesis and disclaim it.   
 {context}
 
 Question: {question}
@@ -132,6 +133,15 @@ PROMPT = PromptTemplate(
 @st.cache_data()
 def on_file_upload():
     st.session_state['uploading'] = True
+
+@st.cache_data()
+def format_chat_history_to_html(past, generated):
+    chat_history_html = "<html><body>"
+    for i in range(len(past)):
+        chat_history_html += f"<p>User: {past[i]}</p><p>AI: {generated[i]}</p><hr>"
+    chat_history_html += "</body></html>"
+    return chat_history_html
+
 @st.cache_data()
 def generate_context_and_question(topic, question):
     # Format the context and question based on user selections
@@ -286,7 +296,15 @@ async def main():
                         st.session_state["generated"][i],
                         key=str(i),
                     )
-
+                chat_history_html = format_chat_history_to_html(st.session_state["past"], st.session_state["generated"])
+                pdf_data = pdfkit.from_string(chat_history_html, False)
+                
+                st.download_button(
+                    label="Download Chat History as PDF",
+                    data=pdf_data,
+                    file_name="chat_history.pdf",
+                    mime="application/pdf"
+                )
 
     st.divider()  # Creates a horizontal line for separation
 

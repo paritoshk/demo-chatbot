@@ -1,5 +1,6 @@
 aiohttp==3.8.5
 openai
+pdfkit
 pdfminer
 pdf2image
 pytesseract

@@ -8,4 +8,5 @@ libgdal-dev
 poppler-utils
 cmake
 pkg-config
+wkhtmltopdf
 libpoppler-cpp-dev
