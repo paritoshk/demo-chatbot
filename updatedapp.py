@@ -251,7 +251,7 @@ async def main():
 
         with container:
             with st.form(key="my_form", clear_on_submit=True):
-                user_input = st.text_area(
+                user_input = st.text_input(
                     "Chat:",
                     placeholder="Ask information about the uplaoded pitch material",
                     key="input",
