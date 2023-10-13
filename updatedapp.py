@@ -296,15 +296,15 @@ async def main():
                         st.session_state["generated"][i],
                         key=str(i),
                     )
-                chat_history_html = format_chat_history_to_html(st.session_state["past"], st.session_state["generated"])
-                pdf_data = pdfkit.from_string(chat_history_html, False)
-                
-                st.download_button(
-                    label="Download Chat History as PDF",
-                    data=pdf_data,
-                    file_name="chat_history.pdf",
-                    mime="application/pdf"
-                )
+                    chat_history_html = format_chat_history_to_html(st.session_state["past"], st.session_state["generated"])
+                    pdf_data = pdfkit.from_string(chat_history_html, False)
+                    
+                    st.download_button(
+                        label="Download Chat History as PDF",
+                        data=pdf_data,
+                        file_name="chat_history.pdf",
+                        mime="application/pdf"
+                    )
 
     st.divider()  # Creates a horizontal line for separation
 
