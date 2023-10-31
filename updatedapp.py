@@ -303,7 +303,9 @@ async def main():
                         label="Download Chat History as PDF",
                         data=pdf_data,
                         file_name="chat_history.pdf",
-                        mime="application/pdf"
+                        mime="application/pdf",
+                        key = f'{i}',
+                      
                     )
 
     st.divider()  # Creates a horizontal line for separation
