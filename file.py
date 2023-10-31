@@ -27,7 +27,7 @@ class UploadedFile:
         documents = loader.load()
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
         documents = text_splitter.split_documents(documents)
-        embeddings = OpenAIEmbeddings(openai_api_key=st.secrets['OPEN_AI_KEY'])
+        embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["OPEN_AI_KEY"])
         vectors = FAISS.from_documents(documents, embeddings)
 
         with open(f"{self.dir}/vector.pkl", "wb") as f:
