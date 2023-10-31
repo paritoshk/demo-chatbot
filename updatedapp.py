@@ -286,7 +286,7 @@ async def main():
                     
 
         if st.session_state["generated"]:
-            st.ballons()
+            st.balloons()
             with response_container:
                 for i in range(len(st.session_state["generated"])):
                     message(
