@@ -283,8 +283,10 @@ async def main():
                     output = await conversational_chat(query)
                     st.session_state["past"].append(query)
                     st.session_state["generated"].append(output)
+                    
 
         if st.session_state["generated"]:
+            st.ballons()
             with response_container:
                 for i in range(len(st.session_state["generated"])):
                     message(
@@ -307,6 +309,7 @@ async def main():
                         key = f'1231241+{i}',
                       
                     )
+
 
     st.divider()  # Creates a horizontal line for separation
 
