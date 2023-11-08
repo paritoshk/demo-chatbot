@@ -10,3 +10,4 @@ cmake
 pkg-config
 wkhtmltopdf
 libpoppler-cpp-dev
+sentence_transformers
