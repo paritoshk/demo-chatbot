@@ -8,7 +8,7 @@ import pickle
 import streamlit as st
 from langchain.document_loaders import TextLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.embeddings import HuggingFaceEmbeddings, SentenceTransformerEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 from langchain.vectorstores import VectorStore
