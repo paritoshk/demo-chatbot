@@ -8,6 +8,7 @@ import pickle
 import streamlit as st
 from langchain.document_loaders import TextLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings, SentenceTransformerEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 from langchain.vectorstores import VectorStore
@@ -27,7 +28,7 @@ class UploadedFile:
         documents = loader.load()
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
         documents = text_splitter.split_documents(documents)
-        embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["OPEN_AI_KEY"])
+        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         vectors = FAISS.from_documents(documents, embeddings)
 
         with open(f"{self.dir}/vector.pkl", "wb") as f:
